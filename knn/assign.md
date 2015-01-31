@@ -29,6 +29,7 @@ What you have to do
 ----
 
 Coding:
+
 1.  (Optional) Store necessary data in the constructor so you can do
     classification later.
 1.  Modify the _majority_ function so that it returns the *value*
@@ -39,6 +40,7 @@ Coding:
     record which number it got right.
 
 Analysis:
+
 1.  What is the role of the number of training points to accuracy?
 1.  What is the role of ~k~ to accuracy?
 1.  What numbers get confused with each other most easily?
