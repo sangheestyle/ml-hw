@@ -1,5 +1,5 @@
 import random
-from numpy import zeros, sign
+from numpy import zeros, sign, power
 from math import exp, log
 from collections import defaultdict
 
@@ -98,7 +98,31 @@ class LogReg:
         :return: Return the new value of the regression coefficients
         """
 
-        # TODO: Implement updates in this function
+        # only non-zero indices
+        nz_idx = train_example.nonzero.keys()
+        nz_idx.append(0)
+
+        # data setup for the following
+        # non-regularization: b[j] = b[j] + lambda * (y - p) * xi
+        # regularrization   : b[j] = non-reg * (1 - 2 * lambda * mu) ** m
+
+        # For update_vals with non-regularization
+        y = train_example.y
+        x = train_example.x
+        step_size = self.step(iteration)
+        exp_beta = exp(self.beta[nz_idx].dot(x[nz_idx]))
+        p = exp_beta / (1 + exp_beta)
+        update_vals = self.beta[nz_idx] + (step_size * (y - p) * x[nz_idx])
+
+        # For regularrization
+        for ii in range(len(self.beta)):
+            self.last_update[ii] += 1
+        reg_vals = power(1 - (2*step_size*self.mu), self.last_update.values())
+        self.beta[nz_idx] = update_vals * reg_vals[nz_idx]
+
+        # Need to reset used-last_update_vals for the next turn
+        for ii in nz_idx:
+            self.last_update[ii] = 0
 
         return self.beta
 
