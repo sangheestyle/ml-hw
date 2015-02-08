@@ -4,13 +4,17 @@ import numpy as np
 from numpy import array
 
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import SGDClassifier
 
 
 
 class Featurizer:
     def __init__(self):
-        self.vectorizer = CountVectorizer()
+        #self.vectorizer = CountVectorizer()
+        # self.vectorizer = TfidfVectorizer(ngram_range=(1, 3))
+        self.vectorizer = TfidfVectorizer(ngram_range=(1, 3), \
+                                          stop_words='english')
 
     def train_feature(self, examples):
         return self.vectorizer.fit_transform(examples)
