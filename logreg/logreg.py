@@ -160,7 +160,8 @@ def read_dataset(positive, negative, vocab, test_proportion=.1):
 def step_update(iteration):
     # TODO (extra credit): Update this function to provide an
     # effective iteration dependent step size
-    return 1.0
+
+    return 2.0 / float(iteration)**0.5
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
@@ -176,6 +177,8 @@ if __name__ == "__main__":
                            type=str, default="../data/hockey_baseball/vocab", required=False)
     argparser.add_argument("--passes", help="Number of passes through train",
                            type=int, default=1, required=False)
+    argparser.add_argument("--step_func", help="Update learning rate with step_update(iteration)",
+                           type=str, default="False", required=False)
 
     args = argparser.parse_args()
     train, test, vocab = read_dataset(args.positive, args.negative, args.vocab)
@@ -183,7 +186,10 @@ if __name__ == "__main__":
     print("Read in %i train and %i test" % (len(train), len(test)))
 
     # Initialize model
-    lr = LogReg(len(vocab), args.mu, lambda x: args.step)
+    if args.step_func == "True":
+        lr = LogReg(len(vocab), args.mu, step_update)
+    else:
+        lr = LogReg(len(vocab), args.mu, lambda x: args.step)
 
     # Iterations
     update_number = 0
