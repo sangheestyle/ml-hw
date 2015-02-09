@@ -1,20 +1,33 @@
 from csv import DictReader, DictWriter
 
+import random
 import numpy as np
 from numpy import array
 
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics import accuracy_score
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.linear_model import SGDClassifier
 
+from nltk import word_tokenize
+from nltk.stem import WordNetLemmatizer
+
+
+random.seed(random.random())
+
+
+class LemmaTokenizer(object):
+    def __init__(self):
+        self.wnl = WordNetLemmatizer()
+    def __call__(self, doc):
+        return [self.wnl.lemmatize(t) for t in word_tokenize(doc)]
 
 
 class Featurizer:
     def __init__(self):
-        #self.vectorizer = CountVectorizer()
-        # self.vectorizer = TfidfVectorizer(ngram_range=(1, 3))
-        self.vectorizer = TfidfVectorizer(ngram_range=(1, 3), \
-                                          stop_words='english')
+        self.vectorizer = CountVectorizer(stop_words='english',
+                              ngram_range=(1,2),
+                              tokenizer=LemmaTokenizer())
 
     def train_feature(self, examples):
         return self.vectorizer.fit_transform(examples)
@@ -41,16 +54,26 @@ if __name__ == "__main__":
         if not line['cat'] in labels:
             labels.append(line['cat'])
 
-    x_train = feat.train_feature(x['text'] for x in train)
+    random.shuffle(train)
+    l = len(train)
+
+    x_train = feat.train_feature(x['text'] for x in train[:-5000])
+
+    x_test_in = feat.test_feature(x['text'] for x in train[-5000:l])
     x_test = feat.test_feature(x['text'] for x in test)
 
-    y_train = array(list(labels.index(x['cat']) for x in train))
+    y_train = array(list(labels.index(x['cat']) for x in train[:-5000]))
+    y_test_in = array(list(labels.index(x['cat']) for x in train[-5000:l]))
 
     # Train classifier
     lr = SGDClassifier(loss='log', penalty='l2', shuffle=True)
     lr.fit(x_train, y_train)
 
     feat.show_top10(lr, labels)
+
+    predictions_in = lr.predict(x_test_in)
+
+    print("Accuracy: %f" % accuracy_score(y_test_in, predictions_in))
 
     predictions = lr.predict(x_test)
     o = DictWriter(open("predictions.csv", 'w'), ["id", "cat"])
