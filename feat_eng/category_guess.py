@@ -1,4 +1,5 @@
 from csv import DictReader, DictWriter
+import re
 
 import random
 import numpy as np
@@ -25,9 +26,12 @@ class LemmaTokenizer(object):
 
 class Featurizer:
     def __init__(self):
-        self.vectorizer = CountVectorizer(stop_words='english',
-                              ngram_range=(1,2),
-                              tokenizer=LemmaTokenizer())
+	self.vectorizer = CountVectorizer(analyzer = 'word',
+                                      stop_words = 'english',
+                                      strip_accents = 'ascii',
+                                      preprocessor = remove_spec,
+                                      tokenizer = LemmaTokenizer(),
+                                      ngram_range = (1,2))
 
     def train_feature(self, examples):
         return self.vectorizer.fit_transform(examples)
@@ -41,6 +45,12 @@ class Featurizer:
             top10 = np.argsort(classifier.coef_[i])[-10:]
             print("%s: %s" % (category, " ".join(feature_names[top10])))
 
+def remove_spec(str):
+    punctuation = re.compile(r'[,.?!|0-9]')
+    str = punctuation.sub('', str)
+
+    return str
+	
 if __name__ == "__main__":
 
     # Cast to list to keep it all in memory
