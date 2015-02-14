@@ -1,3 +1,7 @@
+# Author: Sanghee Kim
+# Submission date: Fri 13 Feb, 2015
+# Feature Engineering
+
 from csv import DictReader, DictWriter
 import re
 
