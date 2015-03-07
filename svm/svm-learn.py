@@ -78,31 +78,22 @@ if __name__ == "__main__":
     # evaluation
     accuracy = sum(prediction==data.test_y)/float(len(data.test_y)) * 100
 
-    if args.kernel == 'linear':
-        print "C: "+ repr(args.C) + ", kernel: " + args.kernel
-    else:
-        print "C: "+ repr(args.C) + ", kernel: " + args.kernel + ", degree: " + repr(args.degree) + ", gamma: "+ repr(args.gamma) + ", coef0: " + repr(args.coef0)
+    print "accuracy: ", accuracy, ", C:", args.C, ", kernel:", args.kernel
+    if args.kernel != 'linear':
+        print "degree:", args.degree, ", gamma:", args.gamma, ", coef0:", args.coef0
 
-    print "accuracy: ", accuracy
 
     if args.examples:
-        plt.subplot(221)
-        idx_3 = where(data.train_y[clf.support_]==3)
-        train_sv = data.train_x[clf.support_]
-        im3 = plt.imshow(train_sv[idx_3[0][0]].reshape((28,28)),
-                cmap=cm.gray, interpolation='nearest')
-        plt.show(im3)
-        plt.subplot(222)
-        im3_2 = plt.imshow(train_sv[idx_3[0][10]].reshape((28,28)),
-                cmap=cm.gray, interpolation='nearest')
-        plt.show(im3_2)
-        plt.subplot(223)
-        idx_8 = where(data.train_y[clf.support_]==8)
-        im8 = plt.imshow(train_sv[idx_8[0][-1]].reshape((28,28)),
-                cmap=cm.gray, interpolation='nearest')
-        plt.show(im8)
-        plt.subplot(224)
-        idx_8 = where(data.train_y[clf.support_]==8)
-        im8_2 = plt.imshow(train_sv[idx_8[0][-10]].reshape((28,28)),
-                cmap=cm.gray, interpolation='nearest')
-        plt.show(im8_2)
+        vals = [3, 8]
+        row = len(vals)
+        col = 4
+        for ii, val in enumerate(vals):
+            for jj in xrange(col):
+                plt.subplot(row, col, jj+1+(ii*col))
+                plt.subplots_adjust(wspace=0.5, hspace=0.5)
+                plt.title('Prediction ' + str(val))
+                idx = where(data.train_y[clf.support_]==val)
+                train_sv = data.train_x[clf.support_]
+                plt.imshow(train_sv[idx[0][jj]].reshape((28,28)),
+                    cmap=cm.gray, interpolation='nearest')
+        plt.show()
