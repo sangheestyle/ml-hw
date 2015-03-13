@@ -1,0 +1,63 @@
+% HMC Math dept HW template example
+% v0.04 by Eric J. Malm, 10 Mar 2005
+\documentclass[12pt,letterpaper,boxed]{hmcpset}
+
+% set 1-inch margins in the document
+\usepackage[margin=1in]{geometry}
+
+% include this if you want to import graphics files with /includegraphics
+\usepackage{graphicx}
+
+% info for header block in upper right hand corner
+\name{Sanghee Kim}
+\class{CSCI 5622}
+\assignment{Boosting}
+\duedate{13 Mar 2015}
+
+\begin{document}
+
+\begin{problem}[Rudin 3.5]
+For any two real sequences $\{a_n\}$, $\{b_n\}$, prove that
+\[
+  \limsup_{n \to \infty} \, (a_n + b_n)
+  \leq \limsup_{n \to \infty} a_n + \limsup_{n \to \infty} b_n,
+\]
+provided the sum on the right is not of the form $\infty - \infty$.
+\end{problem}
+
+\begin{solution}
+Suppose that $\limsup_{n \to \infty} a_n + \limsup_{n \to \infty} b_n \neq \infty - \infty$, so that this sum is determinate. Define 
+\[
+  A_n = \sup_{k \geq n} a_n,
+  \quad
+  B_n = \sup_{k \geq n} b_n, 
+  \quad \text{and} \quad 
+  C_n = \sup_{k \geq n} \, (a_n + b_n). 
+\]
+We first show that $C_n \leq A_n + B_n$ for all $n$. For $k$ and $n$ such that $k \geq n$, we have that $a_k \leq A_n$ and $b_k \leq B_n$. Then $a_k + b_k \leq A_n + B_n$ for all $k \geq n$, so $C_n = \sup_{k \geq n} \, (a_n + b_n) \leq A_n + B_n$. Thus, using the alternate definition of the $\limsup$, we have
+\begin{align*}
+  \limsup_{n \to \infty} \, (a_n + b_n)
+  &= \lim_{n \to \infty} C_n \\
+  &\leq \lim_{n \to \infty} \, (A_n + B_n)
+  = \lim_{n \to \infty} A_n + \lim_{n \to \infty} B_n
+  = \limsup_{n \to \infty} a_n + \limsup_{n \to \infty} b_n.
+\end{align*}
+\end{solution}
+
+\begin{problem}[SS 1.5.11]
+Solve the equation $(z + 1)^5 = z^5$.
+\end{problem}
+
+\begin{solution}
+Taking fifth roots of the equation yields
+\[
+  z + 1 = z e^{ik \frac{2\pi}{5}},
+\]
+where $k \in \mathbb{Z}$. We note that $k = 0$ (and all other multiples of 5) yields $z + 1 = z$, which reduces to $1 = 0$, an inconsistent equation. Isolating $z$, we therefore have the solutions
+\[
+  \boxed{z = \frac{1}{e^{ik \frac{2\pi}{5}} - 1},}
+\] 
+with four unique solutions obtained using $k = 1, 2, 3, 4$. We expect 4 unique solutions because $(z + 1)^5 - z^5$ is a fourth-degree polynomial.
+\end{solution}
+
+\end{document}
