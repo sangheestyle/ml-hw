@@ -17,11 +17,50 @@
 \begin{document}
 
 \begin{problem}[Problem 6.3]
-Update guarantee. Assume that the main weak learner asumption of AdaBoost holds. Let $\{h_t\}$ be the base learner selected at round $\{t\}$ Show that the base learner $\{h_t+1\}$ must be different from $\{h_t\}$.
+Update guarantee. Assume that the main weak learner assumption of AdaBoost holds. Let $h_t$ be the base learner selected at round $t$. Show that the base learner $h_t+1$ must be different from $h_t$.
 \end{problem}
 
 \begin{solution}
-Here the answer.
+
+The meaning of the weak learner assumption of AdaBoost is that the algorithm can constantly search classifiers at least somewhat better than coin flipping probability which means usually  $\epsilon_t < 1/2$.
+\\
+
+To solve this problem, let's assume that $h_t+1 = h_t$. Then,
+
+\begin{align*}
+  \epsilon_t+1 
+  &= \sum^{m}_{i=1} D_{t+1}(i)\mathbb{1}_{yi \neq h_t(x_i)} \\
+  &=\sum^{m}_{i=1} \frac{D_{t}(i)e^{-\alpha_ty_ih_t(x_i)}}{Z_t}\mathbb{1}_{yi \neq h_t(x_i)}
+\end{align*}
+
+For $i$'s that satisfies $y_i \neq h_t(x_i)$, $y_i h_t(x_i)$ equals $-1$. Based on this,
+
+\begin{align*}
+  \epsilon_t+1
+  &=\sum^{m}_{i=1} \frac{D_{t}(i)e^{\alpha_t}}{Z_t}\mathbb{1}_{yi \neq h_t(x_i)} \\
+  &= \frac{e^{\alpha t}}{Z_t}\sum^{m}_{i=1} D_{t}(i)\mathbb{1}_{yi \neq h_t(x_i)}
+\end{align*}
+
+Also, we knew the following equation,
+
+\begin{align*}
+  & Z_t = 2\sqrt{\epsilon_t(1-\epsilon_t)} \\
+  & \alpha_t = \frac{1}{2}\log\frac{1-\epsilon_t}{\epsilon_t} \\
+  & \sum^{m}_{i=1} D_{t}(i)\mathbb{1}_{yi \neq h_t(x_i)} = \epsilon_t
+\end{align*}
+
+Let's replace $Z_t$, $\alpha_t$, and $\sum^{m}_{i=1} D_{t}(i)\mathbb{1}_{yi \neq h_t(x_i)}$
+
+\begin{align*}
+  \epsilon_t+1
+  &= \frac{e^{\frac{1}{2}\log\frac{1-\epsilon_t}{\epsilon_t}}}{2\sqrt{\epsilon_t(1-\epsilon_t)}}\epsilon_t \\
+  &= \frac{\sqrt{\frac{1-\epsilon_t}{\epsilon_t}}}{2\sqrt{\epsilon_t(1-\epsilon_t)}}\epsilon_t \\
+  &= \sqrt{\frac{1-\epsilon_t}{\epsilon_t}} \times \frac{\epsilon_t}{2\sqrt{\epsilon_t(1-\epsilon_t)}} \\
+  &= \frac{1}{2}
+\end{align*}
+
+Here, we can say that if $h_{t+1} = h_t$, $\epsilon_{t+1} = 1/2$. This can perfectly rebut the meaning of the weak learner assumption of AdaBoost. Therefore, the base learner $h_t+1$ must be different from $h_t$.
+
 \end{solution}
 
 \end{document}
